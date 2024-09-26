@@ -1,0 +1,30 @@
+// Optional: Get accounts:
+let accounts = await web3.eth.getAccounts()
+console.log(accounts)
+
+// Deploy del Contratto
+let newIm = await Immatricolazione.new()
+console.log("Indirizzo del contratto:", newIm.address)
+
+// Registrare un Nuovo Veicolo
+await newIm.immatricolaVeicolo("AB123CD", "Audi", 2021)
+
+// Prova con una targa valida
+let valid = await newIm.isTargaValid("AB123CD");
+console.log(valid); // true
+
+// Ottenere i Dettagli del Veicolo Registrato
+let carDetails = await newIm.carToString("AB123CD")
+console.log("Dettagli del veicolo:", carDetails)
+
+// Cambiare il Proprietario del Veicolo
+await newIm.cambiaProprietarioVeicolo("targa", '0xNewOwnerAddress')
+
+// Verificare il Nuovo Proprietario del Veicolo
+let carDetailsChange = await newIm.carToString("AB123CD")
+console.log("Dettagli del veicolo dopo il cambiamento:", carDetailsChange)
+
+// Ottenere il Proprietario del Contratto
+let currentOwner = await newIm.owner()
+console.log("Proprietario del contratto:", currentOwner)
+

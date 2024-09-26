@@ -1,0 +1,52 @@
+// Inizia una sessione Truffle
+truffle develop
+
+// Esegui il deploy del contratto Factory
+migrate --reset
+
+// 1. Crea un'istanza del contratto Factory
+let factory = await FactoryPattern.deployed()
+
+// 2. Crea una nuova immatricolazione
+let newImmatricolazione = await factory.createImmatricolazione()
+
+// 3. Ottieni tutte le immatricolazioni create dal factory
+let immatricolazioni = await factory.getImmatricolazioni()
+console.log(immatricolazioni)
+
+// 4. Interagisci con la prima immatricolazione creata
+let firstImmatricolazioneAddress = immatricolazioni[0]
+let firstInstance = await Immatricolazione.at(firstImmatricolazioneAddress)
+
+// Registra un veicolo nella prima immatricolazione
+await firstInstance.immatricolaVeicolo("ab123cd", "Audi", 2021)
+
+// Controlla i dettagli del veicolo
+let carDetails = await firstInstance.carToString("ab123cd")
+console.log(carDetails)
+
+// 5. Cambia il proprietario del veicolo
+await firstInstance.cambiaProprietarioVeicolo("targa", '0xNewAddress')
+
+// Verifica il cambio del proprietario
+let updatedCarDetails = await firstInstance.carToString("ab123cd")
+console.log(updatedCarDetails)
+
+// 6. Crea una seconda immatricolazione
+let secondImmatricolazione = await factory.createImmatricolazione()
+
+// Ottieni tutte le immatricolazioni aggiornate
+immatricolazioni = await factory.getImmatricolazioni()
+console.log(immatricolazioni)
+
+// Ottieni l'istanza del secondo contratto di immatricolazione
+let secondImmatricolazioneAddress = immatricolazioni[1]
+let secondInstance = await Immatricolazione.at(secondImmatricolazioneAddress)
+
+// Registra un veicolo nella seconda immatricolazione
+await secondInstance.immatricolaVeicolo("xy456ef", "BMW", 2022)
+
+// Ottieni i dettagli del secondo veicolo
+let secondCarDetails = await secondInstance.carToString("xy456ef")
+console.log(secondCarDetails)
+
